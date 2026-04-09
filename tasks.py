@@ -40,3 +40,17 @@ def save_tasks(tasks):
     with open("data.txt", "w") as file:
         for t in tasks:
             file.write(f"{t['task']}|{t['done']}\n")
+def prioritize_tasks(tasks):
+    for i, tasks in enumerate(tasks):
+        print(f"{i+1}.{task["name"]}. (Priority: {task['priority']})")
+    choice = int(input("Enter the number of the task to priortize: "))
+
+if 0 <= choice <len(tasks):
+    new_priority = input("Enter the importance of your task to priortize: [ High,Medium,Low ]: ").lower()
+    if new_priority in ["High", "Medium", "Low"]:
+            tasks[choice]['priority'] = new_priority
+            print(f"Priority updated to {new_priority}!")
+        else:
+            print("Invalid priority. Try again.")
+    else:
+        print("Invalid task number.")
