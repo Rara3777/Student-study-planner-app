@@ -9,7 +9,7 @@ def view_tasks(tasks):
         return
     for i, t in enumerate(tasks):
         status = "✅" if t["done"] else "❌"
-        print(f"{i+1}. {t['task']} [{status}]")
+        print(f"{i+1}. {t['task']} [{status}] Priority: {t.get('priority')}")
 
 def mark_done(tasks):
     view_tasks(tasks)
@@ -31,7 +31,7 @@ def load_tasks():
         with open("data.txt", "r") as file:
             for line in file:
                 task, done = line.strip().split("|")
-                tasks.append({"task": task, "done": done == "True"})
+                tasks.append({"task": task, "done": done == "True", "priority": None})
     except FileNotFoundError:
         pass
     return tasks
@@ -39,8 +39,7 @@ def load_tasks():
 def save_tasks(tasks):
     with open("data.txt", "w") as file:
         for t in tasks:
-            file.write(f"{t['task']}|{t['done']}\n")
-
+            file.write(f"{t['task']}|{t['done']} (Priority: {t.get('priority')})\n")
 def delete_task(tasks):
     view_tasks(tasks)
     if not tasks:
