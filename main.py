@@ -1,4 +1,4 @@
-from tasks import add_task, view_tasks, mark_done, load_tasks, save_tasks, prioritize_tasks
+from tasks import add_task, view_tasks, mark_done, load_tasks, save_tasks, prioritize_tasks, delete_tasks
 
 tasks = load_tasks()  # Load tasks from data.txt
 
