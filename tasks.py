@@ -1,77 +1,132 @@
 def add_task(tasks):
     task = input("Enter task: ")
-    tasks.append({"task": task, "done": False})
+    priority = input("Enter priority (High / Medium / Low): ").lower()
+
+    if priority not in ["high", "medium", "low"]:
+        priority = ""
+
+    tasks.append({
+        "task": task,
+        "done": False,
+        "priority": priority
+    })
+
     print("Task added!")
+
+
+def get_sorted_tasks(tasks):
+    priority_order = {"high": 1, "medium": 2, "low": 3}
+
+    return sorted(
+        tasks,
+        key=lambda t: priority_order.get(t.get("priority", "").lower(), 4)
+    )
+
 
 def view_tasks(tasks):
     if not tasks:
         print("No tasks yet!")
-        return
-    for i, t in enumerate(tasks):
+        return []
+
+    sorted_tasks = get_sorted_tasks(tasks)
+
+    print("\n--- Your Tasks (Sorted by Priority) ---")
+    for i, t in enumerate(sorted_tasks):
         status = "✅" if t["done"] else "❌"
-        print(f"{i+1}. {t['task']} [{status}]")
+        priority = t.get("priority", "None")
+        print(f"{i+1}. {t['task']} [{status}] (Priority: {priority})")
+
+    return sorted_tasks
+
 
 def mark_done(tasks):
-    view_tasks(tasks)
-    if not tasks:
+    sorted_tasks = view_tasks(tasks)
+    if not sorted_tasks:
         return
+
     try:
         index = int(input("Enter task number to mark done: ")) - 1
-        if 0 <= index < len(tasks):
-            tasks[index]["done"] = True
+
+        if 0 <= index < len(sorted_tasks):
+            sorted_tasks[index]["done"] = True
             print("Task marked as done!")
         else:
             print("Invalid number.")
     except ValueError:
         print("Enter a valid number.")
 
-def load_tasks():
-    tasks = []
-    try:
-        with open("data.txt", "r") as file:
-            for line in file:
-                task, done = line.strip().split("|")
-                tasks.append({"task": task, "done": done == "True"})
-    except FileNotFoundError:
-        pass
-    return tasks
-
-def save_tasks(tasks):
-    with open("data.txt", "w") as file:
-        for t in tasks:
-            file.write(f"{t['task']}|{t['done']}\n")
 
 def delete_task(tasks):
-    view_tasks(tasks)
-    if not tasks:
+    sorted_tasks = view_tasks(tasks)
+    if not sorted_tasks:
         return
+
     try:
         index = int(input("Enter task number to delete: ")) - 1
-        if 0 <= index < len(tasks):
-            tasks.pop(index)
-            print("Task successfully deleted !")
+
+        if 0 <= index < len(sorted_tasks):
+            tasks.remove(sorted_tasks[index])
+            print("Task deleted!")
         else:
             print("Invalid number.")
     except ValueError:
         print("Enter a valid number.")
+
+
 def prioritize_tasks(tasks):
-    view_tasks(tasks)
-    while True:
-        
-        index_t = int(input("Enter the number of the task to priortize: ")) - 1
-    
-        if 0 <= index_t <len(tasks):
-            new_priority = input("Enter the importance of your task to priortize: [ High,Medium,Low ]: ").lower()
-            if new_priority.lower() in ["high", "medium", "low"]:
-                
-                tasks[index_t]['priority'] = new_priority
-                print(f"Priority updated to {new_priority}!")
-                break
+    sorted_tasks = view_tasks(tasks)
+    if not sorted_tasks:
+        return
+
+    try:
+        index = int(input("Enter task number to prioritize: ")) - 1
+
+        if 0 <= index < len(sorted_tasks):
+            new_priority = input("Enter priority (High / Medium / Low): ").lower()
+
+            if new_priority in ["high", "medium", "low"]:
+                sorted_tasks[index]["priority"] = new_priority
+                print("Priority updated!")
             else:
-                print("Invalid priority. Try again.")
+                print("Invalid priority.")
         else:
-            print("Invalid task number.")
-             
-    print(f"These are your tasks  with priority")
-    for i, task in enumerate(tasks):
-        print(f"{i+1}.{task['task']}. Priority: {task.get('priority', 'DefaultValue')}")
+            print("Invalid number.")
+
+    except ValueError:
+        print("Enter a valid number.")
+
+
+# ---------------- FILE HANDLING ----------------
+
+def load_tasks():
+    tasks = []
+
+    try:
+        with open("data.txt", "r") as file:
+            for line in file:
+                parts = line.strip().split("|")
+
+                if len(parts) == 3:
+                    task, done, priority = parts
+                elif len(parts) == 2:
+                    task, done = parts
+                    priority = ""
+                else:
+                    continue
+
+                tasks.append({
+                    "task": task,
+                    "done": done == "True",
+                    "priority": priority
+                })
+
+    except FileNotFoundError:
+        pass
+
+    return tasks
+
+
+def save_tasks(tasks):
+    with open("data.txt", "w") as file:
+        for t in tasks:
+            file.write(f"{t['task']}|{t['done']}|{t.get('priority','')}\n")
