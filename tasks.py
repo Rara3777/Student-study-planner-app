@@ -55,16 +55,23 @@ def delete_task(tasks):
     except ValueError:
         print("Enter a valid number.")
 def prioritize_tasks(tasks):
-    for i, tasks in enumerate(tasks):
-        print(f"{i+1}.{task["name"]}. (Priority: {task['priority']})")
-    choice = int(input("Enter the number of the task to priortize: "))
-
-if 0 <= choice <len(tasks):
-    new_priority = input("Enter the importance of your task to priortize: [ High,Medium,Low ]: ").lower()
-    if new_priority in ["High", "Medium", "Low"]:
-            tasks[choice]['priority'] = new_priority
-            print(f"Priority updated to {new_priority}!")
+    view_tasks(tasks)
+    while True:
+        
+        index_t = int(input("Enter the number of the task to priortize: ")) - 1
+    
+        if 0 <= index_t <len(tasks):
+            new_priority = input("Enter the importance of your task to priortize: [ High,Medium,Low ]: ").lower()
+            if new_priority.lower() in ["high", "medium", "low"]:
+                
+                tasks[index_t]['priority'] = new_priority
+                print(f"Priority updated to {new_priority}!")
+                break
+            else:
+                print("Invalid priority. Try again.")
         else:
-            print("Invalid priority. Try again.")
-    else:
-        print("Invalid task number.")
+            print("Invalid task number.")
+             
+    print(f"These are your tasks  with priority")
+    for i, task in enumerate(tasks):
+        print(f"{i+1}.{task['task']}. Priority: {task.get('priority', 'DefaultValue')}")
