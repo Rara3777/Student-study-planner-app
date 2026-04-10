@@ -73,4 +73,4 @@ def prioritize_tasks(tasks):
              
     print(f"These are your tasks  with priority")
     for i, task in enumerate(tasks):
-        print(f"{i+1}.{task['task']}. Priority: {task.get('priority', 'DefaultValue')}")
+        print(f"{i+1}.{task['task']}. Priority: {task.get('priority')}")
