@@ -1,4 +1,4 @@
-ffrom tasks import add_task, view_tasks, mark_done, load_tasks, save_tasks, prioritize_tasks ,delete_task
+from tasks import add_task, view_tasks, mark_done, load_tasks, save_tasks, prioritize_tasks ,delete_task
 
 def menu():
     tasks = load_tasks()
